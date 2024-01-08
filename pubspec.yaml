@@ -1,0 +1,38 @@
+name: mega_moolah
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.2.2
+  audioplayers: ^5.2.1
+  flutter_screenutil: ^5.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  flutter_native_splash: ^2.3.9
+
+flutter_native_splash:
+  background_image: assets/images/splash.png
+  ios: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/audio/
+
+  fonts:
+    - family: Luckiest Guy
+      fonts:
+        - asset: assets/fonts/LuckiestGuy-Regular.ttf
