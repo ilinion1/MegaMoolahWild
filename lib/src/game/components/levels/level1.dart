@@ -36,7 +36,7 @@ class Level1 extends StatelessWidget {
               : success!
                   ? Colors.green
                   : Colors.red,
-          onPressed: () => onItemPressed(index),
+          onPressed: () async => await onItemPressed(index),
         );
       },
       itemCount: type.length,

@@ -10,10 +10,12 @@ class CustomButton extends StatefulWidget {
     super.key,
     required this.onPressed,
     required this.text,
+    this.buttonType = 'button',
   });
 
   final Function()? onPressed;
   final String text;
+  final String buttonType;
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -51,17 +53,25 @@ class _CustomButtonState extends State<CustomButton> {
         alignment: Alignment.center,
         children: [
           Image.asset(
-            isPressed ? AppImages.buttonPressed : AppImages.button,
+            switch (widget.buttonType) {
+              'daily' => isPressed
+                  ? AppImages.dailyButtonPressed
+                  : AppImages.dailyButton,
+              'level' => isPressed
+                  ? AppImages.levelButtonPressed
+                  : AppImages.levelButton,
+              _ => isPressed ? AppImages.buttonPressed : AppImages.button,
+            },
             fit: BoxFit.contain,
-            width: 246.w,
-            height: 64.h,
+            width: widget.buttonType == 'daily' ? 276.w : 246.w,
+            height: widget.buttonType == 'daily' ? 48.h : 64.h,
           ),
-          OutlinedText(
-            text: widget.text,
-            textStyle: TextStyle(
-              fontFamily: 'Luckiest Guy',
-              fontSize: 20.sp,
+          Text(
+            widget.text,
+            style: TextStyle(
+              fontSize: widget.buttonType == 'daily' ? 14.sp : 20.sp,
               color: Colors.white,
+              fontWeight: FontWeight.w800,
             ),
           )
         ],

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mega_moolah/src/common/app_colors.dart';
 
 class OutlinedText extends StatelessWidget {
   const OutlinedText({
     super.key,
     required this.text,
     required this.textStyle,
-    this.strokeWidth = 5,
+    this.strokeWidth = 4,
   });
 
   final String text;
@@ -18,30 +17,22 @@ class OutlinedText extends StatelessWidget {
     return Stack(
       children: [
         Text(
-          text.toUpperCase(),
+          text,
           textAlign: TextAlign.center,
           style: textStyle.merge(
             TextStyle(
-              letterSpacing: 1,
-              fontFamily: 'Luckiest Guy',
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeCap = StrokeCap.round
                 ..strokeWidth = strokeWidth
-                ..color = AppColors.mainColor,
+                ..color = Colors.black,
             ),
           ),
         ),
         Text(
-          text.toUpperCase(),
+          text,
           textAlign: TextAlign.center,
-          style: textStyle.merge(
-            const TextStyle(
-              letterSpacing: 1,
-              fontFamily: 'Luckiest Guy',
-              color: Colors.white,
-            ),
-          ),
+          style: textStyle,
         ),
       ],
     );

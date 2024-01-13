@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mega_moolah/src/common/app_colors.dart';
 import 'package:mega_moolah/src/common/app_images.dart';
+import 'package:mega_moolah/src/common/widgets/custom_app_bar.dart';
 import 'package:mega_moolah/src/common/widgets/custom_button.dart';
+import 'package:mega_moolah/src/common/widgets/money_widget.dart';
 import 'package:mega_moolah/src/common/widgets/outline_text.dart';
 import 'package:mega_moolah/src/game/components/card_widget.dart';
 
@@ -13,29 +16,25 @@ class RulesPage extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(AppImages.levelBackground),
+          image: AssetImage(AppImages.background1),
           fit: BoxFit.cover,
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black54,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const SizedBox.shrink(),
-            const OutlinedText(
-              text: 'rules',
-              textStyle: TextStyle(
-                fontSize: 48,
-              ),
-            ),
-            const SizedBox(
-              width: 236,
-              child: OutlinedText(
-                text:
-                    'You have to collect pairs of elements hidden under the cards',
-                textStyle: TextStyle(
+            const CustomAppBar(text: 'Rules'),
+            SizedBox(
+              width: 275.w,
+              child: Text(
+                'You have to collect pairs of elements hidden under the cards',
+                style: TextStyle(
                   fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -59,28 +58,26 @@ class RulesPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(
-              width: 278,
-              child: OutlinedText(
-                text: 'You earn points for every successful combination',
-                textStyle: TextStyle(
+            SizedBox(
+              width: 273.w,
+              child: const Text(
+                'You earn points for every successful combination',
+                style: TextStyle(
                   fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            const OutlinedText(
-              text: 'Score: 10',
-              textStyle: TextStyle(
-                fontSize: 30,
-              ),
-            ),
-            const SizedBox(
-              width: 302,
-              child: OutlinedText(
-                text:
-                    'If you fail, you lose your extra hearts. Their offering is limited. When they run out, the game is over',
-                textStyle: TextStyle(
+            const MoneyWidget(money: 20),
+            SizedBox(
+              width: 299.w,
+              child: const Text(
+                'If you fail, you lose your extra hearts. Their offering is limited. When they run out, the game is over',
+                style: TextStyle(
                   fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -103,8 +100,8 @@ class RulesPage extends StatelessWidget {
                 const SizedBox(width: 3),
                 Image.asset(
                   AppImages.diamond,
-                  width: 46,
-                  height: 40,
+                  width: 46.w,
+                  height: 40.h,
                   fit: BoxFit.contain,
                 ),
               ],
@@ -112,7 +109,7 @@ class RulesPage extends StatelessWidget {
             // const Spacer(),
             CustomButton(
               onPressed: () => Navigator.pop(context),
-              text: 'lobby',
+              text: 'Lobby',
             ),
           ],
         ),

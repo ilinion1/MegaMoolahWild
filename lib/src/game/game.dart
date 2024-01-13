@@ -4,7 +4,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mega_moolah/src/common/app_images.dart';
+import 'package:mega_moolah/src/common/widgets/custom_app_bar.dart';
 import 'package:mega_moolah/src/common/widgets/custom_button.dart';
+import 'package:mega_moolah/src/common/widgets/money_widget.dart';
 import 'package:mega_moolah/src/common/widgets/outline_text.dart';
 import 'package:mega_moolah/src/controllers/settings_controller.dart';
 import 'package:mega_moolah/src/game/components/middle_widget.dart';
@@ -26,7 +28,7 @@ class MyGame extends StatefulWidget {
 class _MyGameState extends State<MyGame> {
   late int level;
   // comment
-  String title = 'Click to start';
+  String title = 'Click on the card to start';
 
   // for check
   int selectedIndex = -1;
@@ -34,7 +36,6 @@ class _MyGameState extends State<MyGame> {
   bool isPause = false;
 
   // score & lifes
-  int score = 0;
   int life = 3;
 
   // status
@@ -44,8 +45,11 @@ class _MyGameState extends State<MyGame> {
   void levelType() {
     type = switch (level) {
       1 => List.generate(4, (index) => index + 1),
-      2 => List.generate(12, (index) => index + 1),
-      3 => List.generate(13, (index) => index + 1),
+      2 => List.generate(6, (index) => index + 1),
+      3 => List.generate(8, (index) => index + 1),
+      4 => List.generate(10, (index) => index + 1),
+      5 => List.generate(13, (index) => index + 1),
+      6 => List.generate(13, (index) => index + 1),
       _ => List.generate(4, (index) => index + 1),
     };
   }
@@ -55,8 +59,11 @@ class _MyGameState extends State<MyGame> {
   void levelCardFlips() {
     cardFlips = switch (level) {
       1 => List.generate(8, (index) => false),
-      2 => List.generate(24, (index) => false),
-      3 => List.generate(36, (index) => false),
+      2 => List.generate(12, (index) => false),
+      3 => List.generate(16, (index) => false),
+      4 => List.generate(20, (index) => false),
+      5 => List.generate(30, (index) => false),
+      6 => List.generate(36, (index) => false),
       _ => List.generate(8, (index) => false),
     };
   }
@@ -66,8 +73,11 @@ class _MyGameState extends State<MyGame> {
   void levelIsDone() {
     isDone = switch (level) {
       1 => List.generate(8, (index) => false),
-      2 => List.generate(24, (index) => false),
-      3 => List.generate(36, (index) => false),
+      2 => List.generate(12, (index) => false),
+      3 => List.generate(16, (index) => false),
+      4 => List.generate(20, (index) => false),
+      5 => List.generate(30, (index) => false),
+      6 => List.generate(36, (index) => false),
       _ => List.generate(8, (index) => false),
     };
   }
@@ -86,7 +96,7 @@ class _MyGameState extends State<MyGame> {
     levelCardFlips();
     levelIsDone();
 
-    if (level == 3 && type.length <= 13) {
+    if ((level == 5 || level == 6) && type.length <= 13) {
       extendSquare();
     }
     type
@@ -103,8 +113,11 @@ class _MyGameState extends State<MyGame> {
       print('flip');
       cardFlips = switch (level) {
         1 => List.generate(8, (index) => true),
-        2 => List.generate(24, (index) => true),
-        3 => List.generate(36, (index) => true),
+        2 => List.generate(12, (index) => true),
+        3 => List.generate(16, (index) => true),
+        4 => List.generate(20, (index) => true),
+        5 => List.generate(30, (index) => true),
+        6 => List.generate(36, (index) => true),
         _ => List.generate(8, (index) => true),
       };
       setState(() {});
@@ -121,6 +134,12 @@ class _MyGameState extends State<MyGame> {
   }
 
   void extendSquare() {
+    if (level == 5) {
+      final extendSquare = List.generate(13, (index) => index + 1);
+      extendSquare.shuffle();
+      type.addAll(extendSquare.sublist(0, 2));
+      return;
+    }
     final extendSquare = List.generate(13, (index) => index + 1);
     extendSquare.shuffle();
     type.addAll(extendSquare.sublist(0, 5));
@@ -133,16 +152,16 @@ class _MyGameState extends State<MyGame> {
     title = 'Congratulations!';
     setState(() {});
     final model = SettingsProvider.read(context)!.model;
-    if (model.bestScore < score) await model.setScore(score);
+    //! if (model.bestScore < score) await model.setScore(score);
   }
 
   Future<void> isLose() async {
     if (life > 0) return;
     status = GameStatus.lose;
-    title = 'ooohh...';
+    title = 'Failure...';
     setState(() {});
     final model = SettingsProvider.read(context)!.model;
-    if (model.bestScore < score) await model.setScore(score);
+    //! if (model.bestScore < score) await model.setScore(score);
   }
 
   // Buttons pressed
@@ -154,14 +173,13 @@ class _MyGameState extends State<MyGame> {
     selectedIndex = -1;
     success = false;
     isPause = false;
-    score = 0;
     life = 3;
     status = GameStatus.playing;
     refreshLevel();
     setState(() {});
   }
 
-  void onItemPressed(int itemIndex) {
+  void onItemPressed(int itemIndex) async {
     final model = SettingsProvider.read(context)!.model;
     if (model.sound) AudioPlayer().play(AssetSource('audio/sound.wav'));
     if (isPause || isDone[itemIndex] || selectedIndex == itemIndex) return;
@@ -192,8 +210,9 @@ class _MyGameState extends State<MyGame> {
       selectedIndex = -1;
       success = true;
       isPause = true;
-      title = '+30 points';
-      score += 30;
+      title = '+10 points';
+      // score += 30;
+      await model.setMoney(10);
       Future.delayed(const Duration(milliseconds: 500), () async {
         isPause = false;
         isDone[isDoneIndex] = true;
@@ -208,15 +227,23 @@ class _MyGameState extends State<MyGame> {
 
   @override
   Widget build(BuildContext context) {
+    final model = SettingsProvider.watch(context).model;
     return DecoratedBox(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(AppImages.levelBackground),
+          image: AssetImage(
+            switch (level) {
+              < 3 => AppImages.background1,
+              < 5 => AppImages.background2,
+              < 7 => AppImages.background3,
+              _ => AppImages.platform1,
+            },
+          ),
           fit: BoxFit.cover,
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black54,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
@@ -225,13 +252,7 @@ class _MyGameState extends State<MyGame> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              OutlinedText(
-                text: 'Score: $score',
-                textStyle: TextStyle(
-                  fontFamily: 'Luckiest Guy',
-                  fontSize: 18.sp,
-                ),
-              ),
+              MoneyWidget(money: model.money),
               Row(
                 children: List.generate(
                   3,
@@ -239,8 +260,8 @@ class _MyGameState extends State<MyGame> {
                     life >= (index + 1)
                         ? AppImages.diamond
                         : AppImages.diamondBack,
-                    width: 36,
-                    height: 30,
+                    width: 32.w,
+                    height: 32.h,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -255,51 +276,52 @@ class _MyGameState extends State<MyGame> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Stack(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 16.h),
-                    child: Image.asset(
-                      AppImages.platform,
-                      width: 332.w,
-                      height: 216.h,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Column(
+                  // Image.asset(
+                  //   AppImages.star,
+                  //   width: 216.w,
+                  //   height: 216.h,
+                  // ),
+                  Stack(
+                    alignment: Alignment.bottomCenter,
                     children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            AppImages.labelBack,
-                            width: 110.w,
-                            height: 36.h,
-                            fit: BoxFit.contain,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5.0.h),
-                            child: OutlinedText(
-                              text: 'Level: $level',
-                              textStyle: TextStyle(
-                                fontFamily: 'Luckiest Guy',
-                                fontSize: 18.sp,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10.h),
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontFamily: 'Luckiest Guy',
-                          fontSize: 18,
-                          color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.only(top: 16.h),
+                        child: Image.asset(
+                          switch (level) {
+                            < 3 => AppImages.platform1,
+                            < 5 => AppImages.platform2,
+                            < 7 => AppImages.platform3,
+                            _ => AppImages.platform1,
+                          },
+                          width: 332.w,
+                          height: 216.h,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      SizedBox(height: 20.h)
+                      Column(
+                        children: [
+                          Text(
+                            'Level: $level',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(height: 12.w)
+                        ],
+                      ),
                     ],
                   ),
                 ],
@@ -316,7 +338,7 @@ class _MyGameState extends State<MyGame> {
               ),
               CustomButton(
                 onPressed: () => Navigator.pop(context),
-                text: 'LOBBY',
+                text: 'Levels',
               ),
             ],
           ),

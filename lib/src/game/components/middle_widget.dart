@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mega_moolah/src/common/widgets/custom_button.dart';
 import 'package:mega_moolah/src/common/widgets/outline_text.dart';
 import 'package:mega_moolah/src/controllers/settings_controller.dart';
@@ -36,28 +37,56 @@ class MiddleWidget extends StatelessWidget {
           cardFlips: cardFlips,
           isDone: isDone,
           success: success,
-          onItemPressed: (int itemIndex) => onItemPressed(itemIndex),
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
         ),
-      2 => Level2(
+      2 => Level1(
           type: type,
           cardFlips: cardFlips,
           isDone: isDone,
           success: success,
-          onItemPressed: (int itemIndex) => onItemPressed(itemIndex),
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
         ),
-      3 => Level3(
+      3 => Level1(
           type: type,
           cardFlips: cardFlips,
           isDone: isDone,
           success: success,
-          onItemPressed: (int itemIndex) => onItemPressed(itemIndex),
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
+        ),
+      4 => Level1(
+          type: type,
+          cardFlips: cardFlips,
+          isDone: isDone,
+          success: success,
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
+        ),
+      5 => Level3(
+          type: type,
+          cardFlips: cardFlips,
+          isDone: isDone,
+          success: success,
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
+        ),
+      6 => Level3(
+          type: type,
+          cardFlips: cardFlips,
+          isDone: isDone,
+          success: success,
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
         ),
       _ => Level1(
           type: type,
           cardFlips: cardFlips,
           isDone: isDone,
           success: success,
-          onItemPressed: (int itemIndex) => onItemPressed(itemIndex),
+          onItemPressed: (int itemIndex) async =>
+              await onItemPressed(itemIndex),
         ),
     };
   }
@@ -71,17 +100,20 @@ class MiddleWidget extends StatelessWidget {
           children: [
             const Column(
               children: [
-                OutlinedText(
-                  text: 'GAME OVER',
-                  strokeWidth: 8,
-                  textStyle: TextStyle(
+                Text(
+                  'Game over',
+                  style: TextStyle(
                     fontSize: 48,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                OutlinedText(
-                  text: 'try your luck again!',
-                  textStyle: TextStyle(
+                Text(
+                  'Try your luck again!',
+                  style: TextStyle(
                     fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -89,7 +121,7 @@ class MiddleWidget extends StatelessWidget {
             const SizedBox(height: 10),
             CustomButton(
               onPressed: onTryAgainPressed,
-              text: 'Try again',
+              text: 'Restart',
             ),
             const SizedBox(height: 22),
           ],
@@ -97,35 +129,37 @@ class MiddleWidget extends StatelessWidget {
       GameStatus.won => Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const OutlinedText(
-              text: 'Big win!',
-              strokeWidth: 8,
-              textStyle: TextStyle(
-                fontSize: 48,
+            Text(
+              'Big win!',
+              style: TextStyle(
+                fontSize: 48.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(
-              width: 236,
-              child: OutlinedText(
-                text: 'You managed to collect all the pairs!',
-                textStyle: TextStyle(
-                  fontSize: 20,
+            SizedBox(
+              width: 256.w,
+              child: Text(
+                'You managed to collect all the pairs!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             CustomButton(
               onPressed: () async {
-                final model = SettingsProvider.read(context)!.model;
-                model.setLevel(level % 3 + 1);
-                await model.setSettings();
-                onTryAgainPressed();
+                Navigator.pop(context);
               },
               text: 'Next level',
             ),
             const SizedBox(height: 10),
             CustomButton(
               onPressed: onTryAgainPressed,
-              text: 'Try again',
+              text: 'Restart',
             ),
             const SizedBox(height: 22),
           ],

@@ -36,6 +36,7 @@ class _CardFlipperState extends State<CardWidget>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    _isFront = !widget.isFlipped;
   }
 
   @override

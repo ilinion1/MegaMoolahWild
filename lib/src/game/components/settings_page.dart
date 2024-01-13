@@ -1,8 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mega_moolah/src/common/app_colors.dart';
 import 'package:mega_moolah/src/common/app_images.dart';
+import 'package:mega_moolah/src/common/widgets/custom_app_bar.dart';
 import 'package:mega_moolah/src/common/widgets/custom_button.dart';
+import 'package:mega_moolah/src/common/widgets/money_widget.dart';
 import 'package:mega_moolah/src/common/widgets/outline_text.dart';
 import 'package:mega_moolah/src/controllers/settings_controller.dart';
 
@@ -12,160 +15,89 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
-      color: Colors.white54,
-      border: Border.all(color: Colors.white),
+      color: const Color(0xFFA4CD00).withAlpha(70),
+      border: Border.all(
+        color: Colors.black,
+        width: 2.w,
+      ),
       borderRadius: BorderRadius.circular(30),
     );
     final model = SettingsProvider.watch(context).model;
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (value) async => await model.setSettings(),
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppImages.levelBackground),
-            fit: BoxFit.cover,
-          ),
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(AppImages.background1),
+          fit: BoxFit.cover,
         ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const SizedBox.shrink(),
-                const OutlinedText(
-                  text: 'Settings',
-                  textStyle: TextStyle(
-                    fontSize: 48,
-                  ),
-                ),
-                Container(
-                  height: 124,
-                  decoration: decoration,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      OutlinedText(
-                        text: 'Sound: ${model.sound ? 'on' : 'off'}',
-                        textStyle: const TextStyle(
-                          fontSize: 24,
-                        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.black45,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 17),
+          child: Column(
+            children: [
+              SizedBox(height: 47.h),
+              const CustomAppBar(text: 'Settings'),
+              SizedBox(height: 53.h),
+              Container(
+                height: 124,
+                decoration: decoration,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      'Sound: ${model.sound ? 'on' : 'off'}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Switch(
-                        inactiveTrackColor: Colors.white,
-                        inactiveThumbColor: AppColors.secondaryColor,
-                        activeTrackColor: AppColors.mainColor,
-                        activeColor: Colors.lightGreenAccent,
-                        trackOutlineColor: const MaterialStatePropertyAll(
-                          AppColors.secondaryColor,
-                        ),
-                        value: model.sound,
-                        onChanged: (value) async {
-                          model.setSound(value);
-                          await model.toggleAudio();
-                        },
+                    ),
+                    Switch(
+                      inactiveTrackColor: Colors.white,
+                      inactiveThumbColor: AppColors.secondaryColor,
+                      activeTrackColor: AppColors.mainColor,
+                      activeColor: Colors.lightGreenAccent,
+                      trackOutlineColor: const MaterialStatePropertyAll(
+                        AppColors.secondaryColor,
                       ),
-                    ],
-                  ),
+                      value: model.sound,
+                      onChanged: (value) async {
+                        await model.setSound(value);
+                      },
+                    ),
+                  ],
                 ),
-                Container(
-                  height: 178,
-                  decoration: decoration,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const OutlinedText(
-                        text: 'Complexity',
-                        textStyle: TextStyle(
-                          fontSize: 24,
-                        ),
+              ),
+              SizedBox(height: 20.h),
+              Container(
+                height: 178,
+                width: double.infinity,
+                decoration: decoration,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      'You have:',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            onPressed: (model.level > 1)
-                                ? () {
-                                    final model =
-                                        SettingsProvider.read(context)!.model;
-                                    if (model.sound) {
-                                      AudioPlayer()
-                                          .play(AssetSource('audio/sound.wav'));
-                                    }
-                                    model.setLevel(model.level - 1);
-                                  }
-                                : null,
-                            icon: Image.asset(
-                              AppImages.leftArrow,
-                              width: 33,
-                              height: 57,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                          OutlinedText(
-                            text: 'Level${model.level}',
-                            strokeWidth: 8,
-                            textStyle: const TextStyle(
-                              fontSize: 40,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: (model.level < 3)
-                                ? () {
-                                    final model =
-                                        SettingsProvider.read(context)!.model;
-                                    if (model.sound) {
-                                      AudioPlayer()
-                                          .play(AssetSource('audio/sound.wav'));
-                                    }
-                                    model.setLevel(model.level + 1);
-                                  }
-                                : null,
-                            icon: Image.asset(
-                              AppImages.rightArrow,
-                              width: 33,
-                              height: 57,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                    ),
+                    MoneyWidget(
+                      money: model.money,
+                    )
+                  ],
                 ),
-                Container(
-                  height: 150,
-                  width: double.infinity,
-                  decoration: decoration,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const OutlinedText(
-                        text: 'Best score',
-                        textStyle: TextStyle(
-                          fontSize: 24,
-                        ),
-                      ),
-                      OutlinedText(
-                        text: '${model.bestScore}',
-                        textStyle: const TextStyle(
-                          fontSize: 40,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                CustomButton(
-                  onPressed: () async {
-                    await model.setSettings();
-                    if (context.mounted) Navigator.pop(context);
-                  },
-                  text: 'lobby',
-                ),
-              ],
-            ),
+              ),
+              const Spacer(),
+              CustomButton(
+                onPressed: () => Navigator.pop(context),
+                text: 'Lobby',
+              ),
+              SizedBox(height: 64.h),
+            ],
           ),
         ),
       ),

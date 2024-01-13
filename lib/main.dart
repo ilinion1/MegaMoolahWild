@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mega_moolah/src/common/app_colors.dart';
 import 'package:mega_moolah/src/common/app_images.dart';
-import 'package:mega_moolah/src/common/widgets/custom_button.dart';
-import 'package:mega_moolah/src/common/widgets/custom_icon_button.dart';
 import 'package:mega_moolah/src/controllers/settings_controller.dart';
-import 'package:mega_moolah/src/game/components/rules_page.dart';
-import 'package:mega_moolah/src/game/components/settings_page.dart';
-import 'package:mega_moolah/src/game/game.dart';
+import 'package:mega_moolah/src/game/components/level_page.dart';
+import 'package:mega_moolah/src/game/components/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +17,9 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(393, 852),
       child: MaterialApp(
+        theme: ThemeData(fontFamily: 'Poppins'),
         debugShowCheckedModeBanner: false,
-        home: MyAnimatedProgressBar(),
+        home: const MyAnimatedProgressBar(),
         // home: SettingsProvider(
         //   model: SettingsController()..initSettings(),
         //   child: const InitAudio(child: MainPage()),
@@ -33,8 +30,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAnimatedProgressBar extends StatefulWidget {
+  const MyAnimatedProgressBar({super.key});
+
   @override
-  _MyAnimatedProgressBarState createState() => _MyAnimatedProgressBarState();
+  State<MyAnimatedProgressBar> createState() => _MyAnimatedProgressBarState();
 }
 
 class _MyAnimatedProgressBarState extends State<MyAnimatedProgressBar>
@@ -61,6 +60,7 @@ class _MyAnimatedProgressBarState extends State<MyAnimatedProgressBar>
           builder: (_) => SettingsProvider(
             model: SettingsController()..initSettings(),
             child: const InitAudio(child: MainPage()),
+            // child: const LevelMap(),
           ),
         ),
       );
@@ -139,78 +139,6 @@ class _MyAnimatedProgressBarState extends State<MyAnimatedProgressBar>
   }
 }
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final model = SettingsProvider.watch(context).model;
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(AppImages.splash),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CustomIconButton(
-                    icon: AppImages.settings,
-                    onPressed: () {
-                      return Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SettingsProvider(
-                            model: model,
-                            child: const SettingsPage(),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 22),
-                ],
-              ),
-              const SizedBox(height: 165),
-              CustomButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SettingsProvider(
-                      model: model,
-                      child: MyGame(level: model.level),
-                    ),
-                  ),
-                ),
-                text: 'New Game',
-              ),
-              const SizedBox(height: 25),
-              CustomButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const RulesPage(),
-                  ),
-                ),
-                text: 'Rules',
-              ),
-              const SizedBox(height: 108),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class InitAudio extends StatefulWidget {
   const InitAudio({super.key, required this.child});
 
@@ -245,19 +173,9 @@ class InitAudioState extends State<InitAudio> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    // print('disposed');
-    // player.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
-  // Future<void> initialize() async {
-  //   final sound = SettingsProvider.read(context)!.model.sound;
-  //   print(sound);
-  //   if (sound) {
-  //     await playAudio();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

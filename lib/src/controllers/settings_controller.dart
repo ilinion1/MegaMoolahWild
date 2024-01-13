@@ -6,48 +6,66 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsController extends ChangeNotifier {
   bool sound = false;
   int level = 1;
-  int bestScore = 0;
+
+  // updates
+  int money = 0;
+  DateTime dateTime = DateTime.parse("2012-02-27");
+
+  Future<void> setMoney(int amount) async {
+    print('setting money');
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final storage = LocalStorage(sharedPreferences);
+    money += amount;
+    print(money);
+    notifyListeners();
+    await storage.setMoney(money);
+  }
+
+  Future<void> setDateTime() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final storage = LocalStorage(sharedPreferences);
+    dateTime = DateTime.now();
+    notifyListeners();
+    await storage.setDateTime(dateTime);
+  }
 
   Future<void> initSettings() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final storage = LocalStorage(sharedPreferences);
     Map<String, dynamic> data = storage.getSettings();
-    if (data['sound'] == null ||
-        data['level'] == null ||
-        data['score'] == null) {
-      await storage.setSettings(sound, level, bestScore);
+    if (data['sound'] == null || data['level'] == null) {
+      await storage.setSettings(
+        sound,
+        level,
+        dateTime,
+        money,
+      );
       data = storage.getSettings();
     }
     print(data);
     sound = data['sound'];
     level = data['level'];
-    bestScore = data['score'];
+    money = data['money'];
+    dateTime = data['date_time'];
     notifyListeners();
     await toggleAudio();
   }
 
-  void setSound(bool value) {
+  Future<void> setSound(bool value) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final storage = LocalStorage(sharedPreferences);
     sound = value;
     notifyListeners();
+    await toggleAudio();
+    await storage.setSound(sound);
   }
 
-  void setLevel(int value) {
+  Future<void> setLevel(int value) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final storage = LocalStorage(sharedPreferences);
     level = value;
     notifyListeners();
-  }
-
-  Future<void> setScore(int value) async {
-    bestScore = value;
-    final sharedPreferences = await SharedPreferences.getInstance();
-    final storage = LocalStorage(sharedPreferences);
-    await storage.setScore(value);
-    notifyListeners();
-  }
-
-  Future<void> setSettings() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    final storage = LocalStorage(sharedPreferences);
-    await storage.setSettings(sound, level, bestScore);
+    await storage.setLevel(value);
   }
 
   // Audio Section
